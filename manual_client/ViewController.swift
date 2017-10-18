@@ -99,7 +99,11 @@ class ViewController: NSViewController {
         portField.isEnabled = false
         print("Connected!")
         self.view.window!.title = "Connected to \(address):\(port)"
+        
+        podClient.read(10000, timeout: 1)
+
         self.setSetpointControls(enabled: true)
+        
         return
       case .failure(let error):
         print(error)
@@ -277,10 +281,18 @@ class ViewController: NSViewController {
   func sendUpdate(_ state: PodState) {
     if podClient != nil {
       print("Sending Update: ", state)
-      let data = state.toBytes()
-      print("Update is ", data.count, " bytes long")
+      let str = "manual " + state.toCmd() + "\n"
 
-      podClient.send(data: data)
+      switch podClient.send(string: str ) {
+      case .success:
+        guard let data = podClient.read(1024*10) else { return }
+        
+        if let response = String(bytes: data, encoding: .utf8) {
+          print("Response: \(response)")
+        }
+      case .failure(let error):
+        print(error)
+      }
     }
   }
   

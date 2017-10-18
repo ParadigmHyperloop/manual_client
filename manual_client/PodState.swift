@@ -51,4 +51,36 @@ struct PodState {
     
     return d
   }
+  
+  func toCmd() -> String {
+    return "\(brakeA) \(brakeB) \(vent) \(hpFill) \(packA) \(packB) \(skateA)" +
+           " \(skateB) \(skateC) \(skateD) \(mpyeA) \(mpyeB) \(mpyeC) \(mpyeD)"
+  }
+  
+  func fromCmd(_ s: String) -> PodState? {
+    let split = s.split(separator: " ")
+    if split.count != 14 {
+      return nil
+    }
+    
+    return PodState(
+      skateA: UInt8(split[6])!,
+      skateB: UInt8(split[7])!,
+      skateC: UInt8(split[8])!,
+      skateD: UInt8(split[9])!,
+      
+      mpyeA: UInt8(split[10])!,
+      mpyeB: UInt8(split[11])!,
+      mpyeC: UInt8(split[12])!,
+      mpyeD: UInt8(split[13])!,
+      
+      brakeA: UInt8(split[0])!,
+      brakeB: UInt8(split[1])!,
+      
+      hpFill: UInt8(split[3])!,
+      vent: UInt8(split[2])!,
+      packA: UInt8(split[4])!,
+      packB: UInt8(split[5])!
+    )
+  }
 }
